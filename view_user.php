@@ -18,7 +18,6 @@ function menu()
       <div class="navbar-nav ms-auto p-4 p-lg-0">
         <a href="index.php" class="nav-item nav-link ">Home</a>
         <a href="index.php?page=daftar" class="nav-item nav-link">Paroki</a>
-        <a href="index.php?page=album" class="nav-item nav-link">Album Paroki</a>
         <a href="index.php?page=wilayah" class="nav-item nav-link">Wilayah Keuskupan</a>
         <a href="index.php?page=gereja" class="nav-item nav-link">Lokasi Gereja dan Stasi</a>
 
@@ -562,7 +561,7 @@ function beranda()
 function gereja()
 {
   include('koneksi.php');
-  $query = mysqli_query($con, "SELECT * FROM gereja_stasi");
+  $query = mysqli_query($con, "SELECT * FROM gereja_stasi JOIN tbl_paroki ON gereja_stasi.id_paroki=tbl_paroki.id_parokiii");
 ?>
 
   <link rel="stylesheet" href="leaflet/leaflet.css">
@@ -723,6 +722,7 @@ function gereja()
                         <th scope="col">Gereja dan Stasi</th>
                         <th scope="col">Informasi</th>
                         <th scope="col">Rute</th>
+                        <th scope="col">Album</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -740,6 +740,9 @@ function gereja()
                           <td>
                             <a href='https://www.google.com/maps/dir/?api=1&origin="  + "lokasi saat ini" + 
                                                         "&destination= <?php echo $data['latitude']; ?>,<?php echo $data['longitude']; ?>' class='btn btn-info btn-md' target='_blank'>Rute</a>
+                          </td>
+                          <td>
+                            <a href="index.php?page=Album&id=<?= $data['id_paroki']; ?>&untuk=<?= str_replace(" ", "-", $data['nama_paroki']); ?>" class="btn btn-primary">Album</a>
                           </td>
                         </tr>
                       <?php
@@ -1125,62 +1128,6 @@ function daftar()
 
 <?php
 }
-function album()
-{
-  include('koneksi.php');
-  $query = mysqli_query($con, "SELECT * FROM daftar_paroki");
-?>
-  <div class="container-fluid page-header py-5 mb-5">
-    <div class="container py-5">
-      <h1 class="display-3 text-white mb-3 animated slideInDown">ALBUM PAROKI</h1>
-      <nav aria-label="breadcrumb animated slideInDown">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a class="text-white" href="index.php">Home</a></li>
-          <li class="breadcrumb-item"><a class="text-white" href="index.php?page=album">Album</a></li>
-        </ol>
-      </nav>
-    </div>
-  </div>
-  </section>
-  <section id="contact" data-stellar-background-ratio="0.5">
-    <div class="container">
-      <div class="row">
-        <div class="wow fadeInUp col-md-12 col-sm-12" data-wow-delay="0.4s">
-          <div class="card border-0">
-            <div class="card-body">
-              <div class="d-flex flex-wrap">
-                <?php $album = mysqli_query($con, "SELECT * FROM gallery JOIN tbl_paroki ON gallery.id_paroki=tbl_paroki.id_parokiii order BY gallery.id_gallery DESC");
-                if (mysqli_num_rows($album) > 0) {
-                  while ($dataAlbum = mysqli_fetch_assoc($album)) { ?>
-                    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-                    <button class="btn btn-link text-decoration-none img-thumbnail" style="background-image: url(img/aParoki/<?= $dataAlbum['foto'] ?>);background-size: cover;cursor: pointer;width: 250px;height: 150px;margin-left: 15px;" data-toggle="modal" data-target="#foto-<?= $dataAlbum['id_gallery'] ?>"></button>
-                    <div class="modal fade" id="foto-<?= $dataAlbum['id_gallery'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                          <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="exampleModalLabel"><?= $dataAlbum['nama_paroki'] ?></h5>
-                            <button type="button" class="close bg-transparent border-0" style="font-size: 25px;" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body text-center">
-                            <img src="img/aParoki/<?= $dataAlbum['foto'] ?>" style="width: 100%;" class="img-thumbnail" alt="">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                <?php }
-                } ?>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-<?php
-}
 function daftar1()
 {
   include('koneksi.php');
@@ -1555,8 +1502,7 @@ function wilayah()
         <nav aria-label="breadcrumb animated slideInDown">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a class="text-white" href="index.php">Home</a></li>
-            <li class="breadcrumb-item"><a class="text-white" href="index.php?page=readmore">Read More</a></li>
-            <li class="breadcrumb-item"><a class="text-white" href="index.php?page=gallery">Gallery</a></li>
+            <li class="breadcrumb-item"><a class="text-white" href="index.php?page=wilayah">wilayah</a></li>
           </ol>
         </nav>
       </div>
@@ -1718,7 +1664,7 @@ function wilayah()
                         <th scope="col">No</th>
                         <th scope="col">Wilayah</th>
                         <th scope="col">Paroki</th>
-                        <th scope="col">Stasi</th>
+                        <!-- <th scope="col">Stasi</th> -->
                         <th scope="col">Pastor</th>
                       </tr>
 
@@ -1737,30 +1683,20 @@ function wilayah()
                           if (mysqli_num_rows($takeParoki) > 0) {
                             $countParoki = mysqli_num_rows($takeParoki);
                             echo "<td>" . $countParoki . "</td>";
-                            $rowParoki = mysqli_fetch_assoc($takeParoki);
-                            $id_paroki = $rowParoki['id_parokiii'];
-                            $takeStasi = mysqli_query($con, "SELECT * FROM gereja_stasi WHERE id_paroki='$id_paroki'");
-                            if (mysqli_num_rows($takeStasi) > 0) {
-                              $countStasi = mysqli_num_rows($takeStasi);
-                              echo "<td>" . $countStasi . "</td>";
-                              $rowStasi = mysqli_fetch_assoc($takeStasi);
-                              $id_gereja = $rowStasi['id_gereja'];
-                              $takeRomo = mysqli_query($con, "SELECT * FROM tbl_romo WHERE id_gereja='$id_gereja'");
-                              if (mysqli_num_rows($takeRomo) > 0) {
-                                $countPastor = mysqli_num_rows($takeRomo);
-                                echo "<td>" . $countPastor . "</td>";
-                              }
+                            $takeRomo = mysqli_query($con, "SELECT * FROM tbl_paroki JOIN gereja_stasi ON tbl_paroki.id_parokiii=gereja_stasi.id_paroki JOIN tbl_romo ON gereja_stasi.id_gereja=tbl_romo.id_gereja WHERE tbl_paroki.id_wilayah='$id'");
+                            if (mysqli_num_rows($takeRomo) > 0) {
+                              $countPastor = mysqli_num_rows($takeRomo);
+                              echo "<td>" . $countPastor . "</td>";
                             } else {
-                              echo "<td></td>";
                               echo "<td></td>";
                             }
                           } else {
                             echo "<td></td>";
                             echo "<td></td>";
-                            echo "<td></td>";
                           }
                           ?>
-                          <td> <a href="index.php?page=Romo&id=<?php echo $id; ?>" class="btn btn-primary">Informasi</a>
+                          <td>
+                            <a href="index.php?page=Romo&id=<?php echo $id; ?>" class="btn btn-primary">Informasi</a>
                           </td>
                         </tr>
                       <?php
@@ -3064,99 +3000,150 @@ function wilayah()
                     <nav aria-label="breadcrumb animated slideInDown">
                       <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a class="text-white" href="index.php">Home</a></li>
-                        <li class="breadcrumb-item"><a class="text-white" href="index.php?page=readmore">Read More</a></li>
-                        <li class="breadcrumb-item"><a class="text-white" href="index.php?page=gallery">Gallery</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="index.php?page=wilayah">Wilayah Keuskupan</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="index.php?page=Romo&id=<?= $id; ?>">Romo</a></li>
                       </ol>
                     </nav>
                   </div>
                 </div>
-
-
-
-
-
-
-            </div>
-    </section>
-    <!-- CONTACT -->
-    <section id="contact" data-stellar-background-ratio="0.5">
-      <div class="container">
-        <div class="row">
-
-          <div class="wow fadeInUp col-md-12 col-sm-12" data-wow-delay="0.4s">
-
-
-            <br>
-
-            <div class="container-fluid py-5">
-              <div class="container">
-                <div class="row align-items-center">
-
-                  <div class="col-lg-12">
-
-
-
-
-
-
-
-
-
-                    <article class="x">
-                      <div class="card">
-                        <center>
-                          <h2>Nama Romo Pada <?= $data['nama'] ?></h2>
-                        </center>
-                        <div class="card-footer ">
-
-
-                          <div class="row">
-                            <div class="table-responsive">
-                              <table class="display table table-hover" id="daftar">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col" class="text-center">Paroki</th>
-                                    <th scope="col" class="text-center">Stasi</th>
-                                    <th scope="col" class="text-center">Informasi</th>
-                                    <th scope="col" class="text-center">Pastor</th>
-                                    <th scope="col" class="text-center">Umat</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <?php
-                                  $no = 1;
-                                  ?>
-                                  <?php $takeParoki = mysqli_query($con, "SELECT * FROM tbl_paroki JOIN gereja_stasi ON tbl_paroki.id_parokiii=gereja_stasi.id_paroki JOIN tbl_romo ON gereja_stasi.id_gereja=tbl_romo.id_gereja WHERE tbl_paroki.id_wilayah='$id' ORDER BY gereja_stasi.id_gereja DESC");
-                                  if (mysqli_num_rows($takeParoki) > 0) {
-                                    while ($dataParoki = mysqli_fetch_assoc($takeParoki)) { ?>
-                                      <tr>
-                                        <th scope="row"><?php echo $no; ?></th>
-                                        <td><?= $dataParoki['nama_paroki'] ?></td>
-                                        <td><?= $dataParoki['nama_stasi'] ?></td>
-                                        <td><?= $dataParoki['informasi'] ?></td>
-                                        <td><?= $dataParoki['nama_pastor'] ?></td>
-                                        <td><?= $dataParoki['jumlah_umat'] ?></td>
-                                    <?php $no++;
-                                    }
-                                  }
-                                    ?>
-                                </tbody>
-                              </table>
+                <!-- CONTACT -->
+                <section id="contact" data-stellar-background-ratio="0.5">
+                  <div class="container">
+                    <div class="row">
+                      <div class="wow fadeInUp col-md-12 col-sm-12" data-wow-delay="0.4s">
+                        <br>
+                        <div class="container-fluid py-5">
+                          <div class="container">
+                            <div class="row align-items-center">
+                              <div class="col-lg-12">
+                                <article class="x">
+                                  <div class="card">
+                                    <center>
+                                      <h2>Nama Romo Pada <?= $data['nama'] ?></h2>
+                                    </center>
+                                    <div class="card-body">
+                                      <div class="row">
+                                        <div class="table-responsive">
+                                          <table class="display table table-hover" id="daftar">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col" class="text-center">Paroki</th>
+                                                <!-- <th scope="col" class="text-center">Stasi</th>
+                                                <th scope="col" class="text-center">Informasi</th> -->
+                                                <th scope="col" class="text-center">Pastor</th>
+                                                <!-- <th scope="col" class="text-center">Umat</th> -->
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <?php
+                                              $no = 1;
+                                              ?>
+                                              <?php $takeParoki = mysqli_query($con, "SELECT * FROM tbl_paroki JOIN gereja_stasi ON tbl_paroki.id_parokiii=gereja_stasi.id_paroki JOIN tbl_romo ON gereja_stasi.id_gereja=tbl_romo.id_gereja WHERE tbl_paroki.id_wilayah='$id' ORDER BY gereja_stasi.id_gereja DESC");
+                                              if (mysqli_num_rows($takeParoki) > 0) {
+                                                while ($dataParoki = mysqli_fetch_assoc($takeParoki)) { ?>
+                                                  <tr>
+                                                    <th scope="row"><?php echo $no; ?></th>
+                                                    <td><?= $dataParoki['nama_paroki'] ?></td>
+                                                    <!-- <td><?= $dataParoki['nama_stasi'] ?></td> -->
+                                                    <!-- <td><?= $dataParoki['informasi'] ?></td> -->
+                                                    <td><?= $dataParoki['nama_pastor'] ?></td>
+                                                    <!-- <td><?= $dataParoki['jumlah_umat'] ?></td> -->
+                                                <?php $no++;
+                                                }
+                                              }
+                                                ?>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </article>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </section>
+              <?php
+            }
+            function Album()
+            {
+              include('koneksi.php');
+              $id = $_GET['id'];
+              $untuk = $_GET['untuk'];
+              $untuk = str_replace("-", " ", $untuk);
+              $query = mysqli_query($con, "SELECT * FROM tbl_paroki JOIN gallery ON tbl_paroki.id_parokiii=gallery.id_paroki WHERE tbl_paroki.id_parokiii='$id'");
+              ?>
+                <div class="container-fluid page-header py-5 mb-5">
+                  <div class="container py-5">
+                    <h1 class="display-3 text-white mb-3 animated slideInDown">Album Paroki</h1>
+                    <nav aria-label="breadcrumb animated slideInDown">
+                      <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="text-white" href="index.php">Home</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="index.php?page=wilayah">Wilayah Keuskupan</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="index.php?page=Album&id=<?= $id; ?>">Album</a></li>
+                      </ol>
+                    </nav>
                   </div>
                 </div>
-              </div>
-            </div>
-
-
-            </article>
-    </section>
-
-  <?php
+                <!-- CONTACT -->
+                <section id="contact" data-stellar-background-ratio="0.5">
+                  <div class="container">
+                    <div class="row">
+                      <div class="wow fadeInUp col-md-12 col-sm-12" data-wow-delay="0.4s">
+                        <br>
+                        <div class="container-fluid py-5">
+                          <div class="container">
+                            <div class="row align-items-center">
+                              <div class="col-lg-12">
+                                <article class="x">
+                                  <div class="card border-0 shadow">
+                                    <?php if (mysqli_num_rows($query) == 0) { ?>
+                                      <p class="text-center text-dark p-3">Belum ada data album!</p>
+                                    <?php } else if (mysqli_num_rows($query) > 0) { ?>
+                                      <center>
+                                        <h2>Album Paroki <?= $untuk; ?></h2>
+                                      </center>
+                                      <div class="card-body">
+                                        <div class="d-flex flex-wrap">
+                                          <?php while ($data = mysqli_fetch_assoc($query)) { ?>
+                                            <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+                                            <a href="#" class="img-thumbnail" style="background-image: url(img/aParoki/<?= $data['foto'] ?>);background-size: cover;width: 240px;height: 150px;margin: 5px;" data-toggle="modal" data-target="#viewfoto<?= $data['id_gallery'] ?>"></a>
+                                            <div class="modal fade" id="viewfoto<?= $data['id_gallery'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                              <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                  <div class="modal-header border-bottom-0">
+                                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                                    <button type="button" class="close border-0 bg-transparent font-weight-bold" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+                                                    </button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                    <img src="img/aParoki/<?= $data['foto'] ?>" style="width: 100%;" alt="">
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          <?php } ?>
+                                        </div>
+                                      </div>
+                                    <?php } ?>
+                                  </div>
+                                </article>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              <?php
             }
             function detailRomo()
             {
@@ -3167,155 +3154,153 @@ function wilayah()
               $nama = $data["nama_pastor"];
 
 
-  ?>
-    <section id="home" class="slider" data-stellar-background-ratio="0.5">
-      <div class="row">
+              ?>
+                <section id="home" class="slider" data-stellar-background-ratio="0.5">
+                  <div class="row">
 
-        <div class="owl-carousel owl-theme">
-          <div class="item item-first">
-            <div class="caption">
-              <div class="container">
-                <div class="col-md-8 col-sm-12">
-                  <h4>SISTEM INFORMASI GEOGRAFIS</h4>
-                  <h4>KEUSKUPAN ATAMBUA</h4>
-                </div>
-              </div>
-            </div>
-          </div>
+                    <div class="owl-carousel owl-theme">
+                      <div class="item item-first">
+                        <div class="caption">
+                          <div class="container">
+                            <div class="col-md-8 col-sm-12">
+                              <h4>SISTEM INFORMASI GEOGRAFIS</h4>
+                              <h4>KEUSKUPAN ATAMBUA</h4>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-          <div class="item item-second">
-            <div class="caption">
-              <div class="container">
-                <div class="col-md-8 col-sm-12">
-                  <<h4>SISTEM INFORMASI GEOGRAFIS</h4>
-                    <h4>KEUSKUPAN ATAMBUA</h4>
-                </div>
-              </div>
-            </div>
-          </div>
+                      <div class="item item-second">
+                        <div class="caption">
+                          <div class="container">
+                            <div class="col-md-8 col-sm-12">
+                              <<h4>SISTEM INFORMASI GEOGRAFIS</h4>
+                                <h4>KEUSKUPAN ATAMBUA</h4>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-          <div class="item item-third">
-            <div class="caption">
-              <div class="container">
-                <div class="col-md-8 col-sm-12">
-                  <h4>SISTEM INFORMASI GEOGRAFIS</h4>
-                  <h4>KEUSKUPAN ATAMBUA</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                      <div class="item item-third">
+                        <div class="caption">
+                          <div class="container">
+                            <div class="col-md-8 col-sm-12">
+                              <h4>SISTEM INFORMASI GEOGRAFIS</h4>
+                              <h4>KEUSKUPAN ATAMBUA</h4>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-      </div>
-
-
-      <section id="testimonial" data-stellar-background-ratio="0.5">
-        <div class="row">
-          <div class="col-md-12 col-sm-12">
-            <div class="section-title wow fadeInUp" data-wow-delay="0.1s">
-            </div>
-          </div>
-
-        </div>
-      </section>
-      <!-- ABOUT -->
-      <section id="about" data-stellar-background-ratio="0.5">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12 col-sm-12" style="margin-bottom:50px;">
-              <script>
-                var marker;
-
-                function initialize() {
-                  var imageTK = 'icon/nt.png';
-
-                  // Variabel untuk menyimpan informasi (desc)
-                  var infoWindow = new google.maps.InfoWindow;
-                  //  Variabel untuk menyimpan peta Roadmap
-                  var mapOptions = {
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                  }
-                  // Pembuatan petanya
-                  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-                  // Variabel untuk menyimpan batas kordinat
-                  var bounds = new google.maps.LatLngBounds();
-
-                  // Pengambilan data dari database
-                  <?php
-                  $que = mysqli_query($con, "select * from gereja_stasi where id_gereja='$id'");
-                  while ($dat = mysqli_fetch_array($que)) {
-                    $id_pemer = $dat['id_gereja'];
-                    $lat = $dat['latitude'];
-                    $lon = $dat['longitude'];
-                    $sekolah = $dat['nama'];
+                  </div>
 
 
+                  <section id="testimonial" data-stellar-background-ratio="0.5">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12">
+                        <div class="section-title wow fadeInUp" data-wow-delay="0.1s">
+                        </div>
+                      </div>
 
-                    echo ("addMarkerTK($lat, $lon,'$sekolah');\n");
-                  }
-                  ?>
+                    </div>
+                  </section>
+                  <!-- ABOUT -->
+                  <section id="about" data-stellar-background-ratio="0.5">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12" style="margin-bottom:50px;">
+                          <script>
+                            var marker;
 
-                  // Proses membuat marker
-                  function addMarkerTK(lat, lng, info) {
-                    var lokasi = new google.maps.LatLng(lat, lng);
-                    bounds.extend(lokasi);
-                    var marker = new google.maps.Marker({
-                      map: map,
-                      position: lokasi,
-                      icon: imageTK
-                    });
-                    map.fitBounds(bounds);
-                    bindInfoWindow(marker, map, infoWindow, info);
-                  }
+                            function initialize() {
+                              var imageTK = 'icon/nt.png';
 
+                              // Variabel untuk menyimpan informasi (desc)
+                              var infoWindow = new google.maps.InfoWindow;
+                              //  Variabel untuk menyimpan peta Roadmap
+                              var mapOptions = {
+                                mapTypeId: google.maps.MapTypeId.ROADMAP
+                              }
+                              // Pembuatan petanya
+                              var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                              // Variabel untuk menyimpan batas kordinat
+                              var bounds = new google.maps.LatLngBounds();
 
-                  // Menampilkan informasi pada masing-masing marker yang diklik
-                  function bindInfoWindow(marker, map, infoWindow, html) {
-                    google.maps.event.addListener(marker, 'click', function() {
-                      infoWindow.setContent(html);
-                      infoWindow.open(map, marker);
-                    });
-                  }
-                }
-                google.maps.event.addDomListener(window, 'load', initialize);
-              </script>
-              <hr class="text-success">
-              <div id="map-canvas" style="width:100%;height:300px;"></div>
-              <hr />
-              <center>
-                <h2 class="m-0 text-primary">Informasi Gereja Katolik Keuskupan Atambua</h2>
-              </center>
-            </div>
-            <hr />
-
-            <!--  <h3> <a href="index.php?page=infWil" class="m-0 text-primary">  <?php echo $data["nama"]; ?></a></h3> -->
-
-            <div class="col-md-6 col-sm-12">
-              <h3 class="m-0 text-primary"> <?php echo $data["nama"]; ?></h3>
-
-              <hr>
-              <h5 class="m-0 text-primary">Pastor Paroki:</hr>
-              </h5> <br />
-              <h5 class="m-0 text"> <?php echo $data["pastor"]; ?></h5>
-
-              <hr>
-              <h5 class="m-0 text-primary">Informasi :</hr>
-              </h5> <br />
-              <h5 class="justify"><?php echo $data["informasi"]; ?></h5>
-            </div>
-
-            <div class="col-md-6 col-sm-12">
-              <div class="wow fadeInUp about-image" data-wow-delay="0.6s">
-                <img src="img/fotokeag/<?php echo $data["foto"]; ?>" class="img-responsive" alt="" style="max-height:400px;">
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
+                              // Pengambilan data dari database
+                              <?php
+                              $que = mysqli_query($con, "select * from gereja_stasi where id_gereja='$id'");
+                              while ($dat = mysqli_fetch_array($que)) {
+                                $id_pemer = $dat['id_gereja'];
+                                $lat = $dat['latitude'];
+                                $lon = $dat['longitude'];
+                                $sekolah = $dat['nama'];
 
 
+
+                                echo ("addMarkerTK($lat, $lon,'$sekolah');\n");
+                              }
+                              ?>
+
+                              // Proses membuat marker
+                              function addMarkerTK(lat, lng, info) {
+                                var lokasi = new google.maps.LatLng(lat, lng);
+                                bounds.extend(lokasi);
+                                var marker = new google.maps.Marker({
+                                  map: map,
+                                  position: lokasi,
+                                  icon: imageTK
+                                });
+                                map.fitBounds(bounds);
+                                bindInfoWindow(marker, map, infoWindow, info);
+                              }
+
+
+                              // Menampilkan informasi pada masing-masing marker yang diklik
+                              function bindInfoWindow(marker, map, infoWindow, html) {
+                                google.maps.event.addListener(marker, 'click', function() {
+                                  infoWindow.setContent(html);
+                                  infoWindow.open(map, marker);
+                                });
+                              }
+                            }
+                            google.maps.event.addDomListener(window, 'load', initialize);
+                          </script>
+                          <hr class="text-success">
+                          <div id="map-canvas" style="width:100%;height:300px;"></div>
+                          <hr />
+                          <center>
+                            <h2 class="m-0 text-primary">Informasi Gereja Katolik Keuskupan Atambua</h2>
+                          </center>
+                        </div>
+                        <hr />
+
+                        <!--  <h3> <a href="index.php?page=infWil" class="m-0 text-primary">  <?php echo $data["nama"]; ?></a></h3> -->
+
+                        <div class="col-md-6 col-sm-12">
+                          <h3 class="m-0 text-primary"> <?php echo $data["nama"]; ?></h3>
+
+                          <hr>
+                          <h5 class="m-0 text-primary">Pastor Paroki:</hr>
+                          </h5> <br />
+                          <h5 class="m-0 text"> <?php echo $data["pastor"]; ?></h5>
+
+                          <hr>
+                          <h5 class="m-0 text-primary">Informasi :</hr>
+                          </h5> <br />
+                          <h5 class="justify"><?php echo $data["informasi"]; ?></h5>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                          <div class="wow fadeInUp about-image" data-wow-delay="0.6s">
+                            <img src="img/fotokeag/<?php echo $data["foto"]; ?>" class="img-responsive" alt="" style="max-height:400px;">
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </section>
 
 
 
@@ -3331,5 +3316,7 @@ function wilayah()
 
 
 
-    <?php
-            }
+
+
+                <?php
+              }
